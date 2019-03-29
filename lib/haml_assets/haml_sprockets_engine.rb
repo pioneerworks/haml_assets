@@ -87,8 +87,16 @@ module HamlAssets
       @view_context ||= scope.tap do |s|
         s.singleton_class.instance_eval do
           include HamlAssets::HamlSprocketsEngine::ViewContext
+          # sprockets-rails 3.x
           if defined? ::Sprockets::Rails::Context
             include ::Sprockets::Rails::Context
+            self.assets_prefix = Rails.configuration.assets.prefix
+            self.digest_assets = Rails.configuration.assets.digest
+          end
+
+          # sprockets-rails 2.x
+          if defined? ::Sprockets::Rails::Helper
+            include ::Sprockets::Rails::Helper
             self.assets_prefix = Rails.configuration.assets.prefix
             self.digest_assets = Rails.configuration.assets.digest
           end
